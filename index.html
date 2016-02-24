@@ -19,16 +19,17 @@
   var height = 800;
   var n1 = 10;
   var n2 = 20;
+  var goods = 5;
   var timeWindow = 30;
   var spaceWidth = 300;
   var curveWidth = 150;
   var curveHight = 30;
-  var groupWidth = 100;
+  var groupWidth = 200;
   var groupHeight = 30;
   var coreAttrData = genAttrData(n1, timeWindow);
-  var coreConsumeData = genConsumeData(n1);
+  var coreConsumeData = genConsumeData(n1, goods);
   var commonAttrData = genAttrData(n2, timeWindow);
-  var commonConsumeData = genConsumeData(n2);
+  var commonConsumeData = genConsumeData(n2, goods);
   var relationData = genRelationData(n1, n2);
   
   var svgBody = d3.select('body').append('svg').attr('width', width).attr('height', height);
@@ -40,15 +41,16 @@
   var relation = svgBody.append('g')
     .classed('relation', true);
 
-  drawGroup.call(core, coreAttrData, groupWidth, groupHeight);
-  drawGroup.call(common, commonAttrData, groupWidth, groupHeight);
+  drawGroup.call(core, coreConsumeData, groupWidth, groupHeight);
+  drawGroup.call(common, commonConsumeData, groupWidth, groupHeight);
   drawCurve.call(core, coreAttrData, curveWidth, curveHight);
   drawCurve.call(common, commonAttrData, curveWidth, curveHight);
   drawRelation.call(relation, relationData, spaceWidth, groupHeight);
+
   core.attr('transform', 'translate(0,0)');
   common.attr('transform', 'translate('+(groupWidth+curveWidth+spaceWidth)+',0)')
-  core.selectAll('rect').attr('transform', 'translate('+(curveWidth)+',0)');
-  common.selectAll('path').attr('transform', 'translate('+(groupWidth)+',0)');
-  relation.attr('transform', 'translate('+(groupWidth+curveWidth)+',0)');
+  core.selectAll('.group_rect').attr('transform', 'translate('+(curveWidth)+',0)');
+  common.selectAll('.group_attribute_timeseries').attr('transform', 'translate('+(groupWidth)+',0)');
+  relation.selectAll('.relation').attr('transform', 'translate('+(groupWidth+curveWidth)+',0)');
 
 </script>

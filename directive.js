@@ -1,17 +1,36 @@
 var drawGroup = function(data, w, h){
-  this.selectAll('rect')
+  data.sort(function(b, a) {
+    return a[a.length-1].x1 - b[b.length-1].x1;
+  });
+  var color = ['#FF8C69', '#B2DFEE', '#8FBC8F', '#8968CD', '#BDB76B'];
+  var xscale = d3.scale.linear()
+    .domain([0,d3.max(data.map(function(d) { return d[d.length-1].x1; }))])
+    .range([0,w]);
+  this.selectAll('g')
     .data(data)
+    .enter()
+    .append('g')
+    .selectAll('rect')
+    .data(function(d) { return d; })
     .enter()
     .append('rect')
     .classed('group_rect', true)
-    .attr('width', w)
-    .attr('height', h)
-    .attr('x', 0)
-    .attr('y', function(d, i) { 
-      return i * d3.select(this).attr('height');
+    .attr('width', function(d) {
+      return xscale(d.x);
     })
-    .attr('fill', 'rgb(15,150,150)')
-    .attr('stroke', 'black');
+    .attr('height', h)
+    .attr('x', function(d) {
+      return xscale(d.x1 - d.x);
+    })
+    .attr('y', function(d, i, j) { 
+      return j * d3.select(this).attr('height');
+    })
+    .attr('fill', function(d, i) {
+      return color[i];
+    })
+    .attr('fill-opacity', 1)
+    .attr('stroke-width', 1)
+    .attr('stroke', '#ffffff');
 };
 var drawCurve = function(data, w, h){
   var line_width = 2;
@@ -77,9 +96,10 @@ var drawRelation = function(data, w, h){
     .data(function(d) { return d; })
     .enter()
     .append('path')
+    .classed('relation', true)
     .attr('d', area)
-    .attr('fill', '#aa6666')
-    .attr('fill-opacity', 0.7);
+    .attr('fill', '#808080')
+    .attr('fill-opacity', 1);
 
   //filter operation
   var filter = d3.select('body')
@@ -87,7 +107,7 @@ var drawRelation = function(data, w, h){
   .attr('type', 'range')
   .attr('min', 0)
   .attr('max', 100)
-  .attr('value', 50);
+  .attr('value', 90);
   var filterScale = d3.scale.linear()
     .range([d3.min(d3.min(data)), d3.max(d3.max(data))])
     .domain([filter.attr('min'), filter.attr('max')]);
@@ -101,5 +121,6 @@ var drawRelation = function(data, w, h){
         return 0.7;
       });
   };
+  update.call(filter[0][0]);
   filter.on('change', update);
 };
