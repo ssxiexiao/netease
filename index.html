@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="data.js" charset="utf-8"></script>
+  <script type="text/javascript" src="directive.js" charset="utf-8"></script>
+  <style>
+  text {
+    font: bold 20px monospace;
+  }
+  </style>
+</head>
+<body>
+</body>
+</html>
+<script type="text/javascript">
+  var width = 1000;
+  var height = 800;
+  var n1 = 10;
+  var n2 = 20;
+  var timeWindow = 30;
+  var spaceWidth = 300;
+  var curveWidth = 150;
+  var curveHight = 30;
+  var groupWidth = 100;
+  var groupHeight = 30;
+  var coreAttrData = genAttrData(n1, timeWindow);
+  var coreConsumeData = genConsumeData(n1);
+  var commonAttrData = genAttrData(n2, timeWindow);
+  var commonConsumeData = genConsumeData(n2);
+  var relationData = genRelationData(n1, n2);
+  
+  var svgBody = d3.select('body').append('svg').attr('width', width).attr('height', height);
+  var svgBody = svgBody.append('g');
+  var core = svgBody.append('g')
+    .classed('core', true);
+  var common = svgBody.append('g')
+    .classed('common', true);
+  var relation = svgBody.append('g')
+    .classed('relation', true);
+
+  drawGroup.call(core, coreAttrData, groupWidth, groupHeight);
+  drawGroup.call(common, commonAttrData, groupWidth, groupHeight);
+  drawCurve.call(core, coreAttrData, curveWidth, curveHight);
+  drawCurve.call(common, commonAttrData, curveWidth, curveHight);
+  drawRelation.call(relation, relationData, spaceWidth, groupHeight);
+  core.attr('transform', 'translate(0,0)');
+  common.attr('transform', 'translate('+(groupWidth+curveWidth+spaceWidth)+',0)')
+  core.selectAll('rect').attr('transform', 'translate('+(curveWidth)+',0)');
+  common.selectAll('path').attr('transform', 'translate('+(groupWidth)+',0)');
+  relation.attr('transform', 'translate('+(groupWidth+curveWidth)+',0)');
+
+</script>
